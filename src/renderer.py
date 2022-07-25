@@ -25,6 +25,17 @@ class Renderer:
             # Fill the background with the grass colour
             self.screen.fill(game_map.backgorund_colour_rgb)
 
+            # Draw the bodies of water
+            for i in range(self.game_map.water_map_len):
+                for j in range(self.game_map.water_map_len):
+                    if self.game_map.water_map[i][j] == 1:
+                        pygame.draw.rect(self.screen, self.game_map.water_colour,
+                                        pygame.Rect(
+                                        ((j * self.game_map.water_rect_len,
+                                          i * self.game_map.water_rect_len),
+                                          self.game_map.water_rect_size)
+                                        ))
+
             # Draw the towers and the decorative "stone" tiles underneath them
             for i in range(2):
                 pygame.draw.circle(self.screen, self.game_map.stone_tile_colour,
