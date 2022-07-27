@@ -1,65 +1,34 @@
 class GameMap:
 
-    def __init__(self):
+    def __init__(self, gamedata):
         # Map dimensions
-        self.dim = (768, 768)
+        self.dim = gamedata['map_dims']
 
         # "Grass" background colour
-        self.backgorund_colour_rgb = (7, 93, 2)
+        self.backgorund_colour = gamedata['background_colour']
 
-        # Tower positions (from centre): (T1, T2)
-        # Top-left corners: ((16, 624), (624, 16)), + 1/2 * tower size
-        self.tower_pos = ((80, 688), (688, 80))
+        # Tower positions (from centre)
+        self.tower_pos_1 = gamedata['tower']['team_1_loc']
+        self.tower_pos_2 = gamedata['tower']['team_2_loc']
 
         # Decorative "stone" tiles at tower areas
-        self.stone_tile_colour = (228, 211, 204)
-        self.stone_tile_radius = 164
+        self.stone_tile_colour = gamedata['stone_tile_colour']
+        self.stone_tile_radius = gamedata['stone_tile_radius']
         # Clarify this position as origin of stone tiles
-        self.stone_tile_circle_centres = self.tower_pos
+        self.stone_tile_circle_centres = (self.tower_pos_1, self.tower_pos_2)
 
-        # Player spawn positions
-        # Top-left corners + 1/2 * player size
-        self.player_spawn_pos = (((80, 576), (192, 576), (192, 688)),
-                                 ((688, 192), (576, 192), (576, 80)))
+        # Player spawn positions (from centre)
+        self.player_spawn_pos_1 = gamedata['player']['team_1_spawn_loc']
+        self.player_spawn_pos_2 = gamedata['player']['team_2_spawn_loc']
 
-        # Minion nest positions
-        # Top-left corners: ((80, 80), (352, 352), (624, 624)), + 1/2 * nest size
-        self.minion_nest_pos = ((112, 112), (384, 384), (656, 656))
-        self.minion_spawn_pos = (((104, 64), (120, 64), (104, 160), (120, 160),
-                                  (376, 336), (392, 336), (376, 432), (392, 432),
-                                  (648, 608), (664, 608), (648, 704), (664, 704)),
-                                 ((64, 104), (64, 120), (160, 104), (160, 120),
-                                  (336, 376), (336, 392), (432, 376), (432, 392),
-                                  (608, 648), (608, 664), (704, 648), (704, 664)))
+        # Minion nest positions (from centre)
+        self.minion_nest_pos = gamedata['minion_nest']['loc']
+        self.minion_h_spawn_pos = gamedata['minion']['h_spawn_loc']
+        self.minion_v_spawn_pos = gamedata['minion']['v_spawn_loc']
 
         # Water (TODO: decide whether to move to separate class)
-        self.water_colour = (63, 105, 204)
-        # Water positions (top-left, put in 24-by-24 matrix)
-        self.water_rect_len = 32
+        self.water_colour = gamedata['water_colour']
+        self.water_rect_len = gamedata['water_rect_len']
         self.water_rect_size = (self.water_rect_len, self.water_rect_len)
-        self.water_map_len = 24
-        self.water_map = \
-        ((0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-         (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        self.water_map_len = gamedata['water_map_len']
+        self.water_map = gamedata['water_map']
