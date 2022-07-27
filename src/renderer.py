@@ -52,9 +52,20 @@ class Renderer:
                                     (tower_centres, (16, 16))
                                     )) # Tower centre markers
 
+            # DEBUG: Draw the player spawn points
+            for i in range(len(self.game_map.player_spawn_pos)):
+                for j in range(len(self.game_map.player_spawn_pos[i])):
+                    pspawn_top_lefts = [k - 32 for k in self.game_map.player_spawn_pos[i][j]]
+                    pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(
+                                        (pspawn_top_lefts, (64, 64))
+                                        )) # Player spawn placeholders
+                    pspawn_centres = [k - 8 for k in self.game_map.player_spawn_pos[i][j]]
+                    pygame.draw.rect(self.screen, (0, 0, 0), pygame.Rect(
+                                        (pspawn_centres, (16, 16))
+                                        )) # Player spawn centre markers
+
             # Draw the minion nests
-            for i in range(3):
-                # Placeholders for minion nests
+            for i in range(len(self.game_map.minion_nest_pos)):
                 tower_top_lefts = [j - 32 for j in self.game_map.minion_nest_pos[i]]
                 pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(
                                     (tower_top_lefts, (64, 64))
@@ -63,6 +74,28 @@ class Renderer:
                 pygame.draw.rect(self.screen, (0, 0, 0), pygame.Rect(
                                     (tower_centres, (16, 16))
                                     )) # Nest centre markers
+
+            # DEBUG: Draw the minion spawn points
+            for i in range(len(self.game_map.minion_spawn_pos[0])):
+                mspawn_top_lefts = (self.game_map.minion_spawn_pos[0][i][0] - 4,
+                                    self.game_map.minion_spawn_pos[0][i][1] - 8)
+                pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(
+                                    (mspawn_top_lefts, (8, 16))
+                                    )) # Minion spawn placeholders
+                mspawn_centres = [j - 2 for j in self.game_map.minion_spawn_pos[0][i]]
+                pygame.draw.rect(self.screen, (0, 0, 0), pygame.Rect(
+                                    (mspawn_centres, (4, 4))
+                                    )) # Minion spawn centre markers
+            for i in range(len(self.game_map.minion_spawn_pos[1])):
+                mspawn_top_lefts = (self.game_map.minion_spawn_pos[1][i][0] - 8,
+                                    self.game_map.minion_spawn_pos[1][i][1] - 4)
+                pygame.draw.rect(self.screen, (255, 255, 255), pygame.Rect(
+                                    (mspawn_top_lefts, (16, 8))
+                                    )) # Minion spawn placeholders
+                mspawn_centres = [j - 2 for j in self.game_map.minion_spawn_pos[1][i]]
+                pygame.draw.rect(self.screen, (0, 0, 0), pygame.Rect(
+                                    (mspawn_centres, (4, 4))
+                                    )) # Minion spawn centre markers
 
             # Flip (i.e. refresh) the display
             pygame.display.flip()
